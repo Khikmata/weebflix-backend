@@ -55,10 +55,13 @@ router.get("/:id/watchlist", checkAuth, async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+router.get("/:id/starlist", checkAuth, async (req, res) => {
   try {
-    const users = await UserModel.find();
-    res.json(users);
+    const user = await UserModel.findById(req.params.id).select("starlist").populate("starlist");
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json(user.starlist);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

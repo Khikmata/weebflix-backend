@@ -23,7 +23,7 @@ router.post("/watchlist", checkAuth, async (req, res) => {
 // Delete anime from watchlist
 router.delete("/watchlist/:animeId", checkAuth, async (req, res) => {
   try {
-    const user = await UserModel.findById(req.user.id);
+    const user = await UserModel.findById(req.userId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }

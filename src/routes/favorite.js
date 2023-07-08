@@ -8,12 +8,11 @@ const router = express.Router();
 router.post("/", checkAuth, async (req, res) => {
   try {
     const { animeId } = req.body;
-    const user = await UserModel.findById(req.user.id);
-    console.log(user);
+    const user = await UserModel.findById(req.userId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    user.favoriteAnimeList.push(animeId);
+    user.favoriteList.push(animeId);
     await user.save();
     res.sendStatus(201);
   } catch (error) {
