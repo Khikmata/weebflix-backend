@@ -1,0 +1,9 @@
+export { AdminRouter } from "./admin.js";
+export { AuthRouter } from "./auth.js";
+export { CommentRouter } from "./comment.js";
+export { FavoriteRouter } from "./favorite.js";
+export { FriendRouter } from "./friend.js";
+export { PlayerRouter } from "./player.js";
+export { StarRouter } from "./star.js";
+export { UserRouter } from "./user.js";
+export { WatchlistRouter } from "./watchlist.js";
