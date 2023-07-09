@@ -29,15 +29,15 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.get("/:id/favorites", checkAuth, async (req, res) => {
+router.get("/:id/favorites", async (req, res) => {
   try {
     const user = await UserModel.findById(req.params.id)
-      .select("favoriteAnimeList")
-      .populate("favoriteAnimeList");
+      .select("favoriteList")
+      .populate("favoriteList");
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    res.json(user.favoriteAnimeList);
+    res.json(user.favoriteList);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

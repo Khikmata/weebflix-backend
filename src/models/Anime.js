@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+//type IDATA for frontend
 export const animeSchema = new mongoose.Schema({
   mal_id: { type: Number },
   url: { type: String },

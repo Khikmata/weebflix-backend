@@ -27,7 +27,7 @@ router.delete("/:animeId", checkAuth, async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    user.favoriteAnimeList.pull(req.params.animeId);
+    user.favoriteList.pull(req.params.animeId);
     await user.save();
     res.sendStatus(204);
   } catch (error) {

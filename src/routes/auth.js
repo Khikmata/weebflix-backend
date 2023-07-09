@@ -63,6 +63,7 @@ router.get("/me", checkAuth, async (req, res) => {
     const user = await UserModel.findById(req.userId)
       .select("-password")
       .populate("favoriteList", "-_id title");
+    console.log(user);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -72,7 +73,7 @@ router.get("/me", checkAuth, async (req, res) => {
   }
 });
 // Get current user's favorite anime list
-router.get("/me/favoriteslist", checkAuth, async (req, res) => {
+router.get("/me/favoritelist", checkAuth, async (req, res) => {
   try {
     const user = await UserModel.findById(req.userId)
       .select("favoriteList")
