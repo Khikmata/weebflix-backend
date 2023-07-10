@@ -14,19 +14,21 @@ router.post("/", checkAuth, async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    console.log(user);
-    console.log(req.userId);
+
     const comment = new Comment({
       user: req.userId,
-      animeId,
+      animeId: animeId,
       content,
     });
 
     user.comments.push(comment);
     await user.save();
 
-    const populatedComment = await comment.populate("user", "username profileImage");
-
+    const populatedComment = (await comment.populate("user", "username profileImage")).populate(
+      "anime",
+      "mal_id"
+    );
+    await comment.save();
     res.status(201).json(populatedComment);
   } catch (error) {
     res.status(500).json({ error: error.message });

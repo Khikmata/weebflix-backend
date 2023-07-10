@@ -1,18 +1,17 @@
 import express from "express";
-import { checkAuth } from "../middleware/auth.js";
 import { UserModel } from "../models/User.js";
 
 const router = express.Router();
 
-router.post("/", checkAuth, async (req, res) => {
+router.post("/", async (req, res) => {
   try {
-    const { animeId } = req.body;
+    const { animeId, myRating } = req.body;
     const user = await UserModel.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    user.starredAnimeList.push(animeId);
+    user.starList.push({ anime: animeId, myRating });
     await user.save();
 
     res.sendStatus(201);
@@ -22,15 +21,14 @@ router.post("/", checkAuth, async (req, res) => {
 });
 
 // Remove anime from starred anime list
-router.delete("/:animeId", checkAuth, async (req, res) => {
+router.delete("/:animeId", async (req, res) => {
   try {
-    const { animeId } = req.params;
-    const user = await User.findById(req.user.id);
+    const user = await UserModel.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    user.starredAnimeList.pull(animeId);
+    await user.starList.remove(req.params.animeId);
     await user.save();
 
     res.sendStatus(204);

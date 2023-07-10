@@ -17,7 +17,8 @@ router.get("/users", verifyAdminRole, async (req, res) => {
   }
 });
 
-router.get("/comments", verifyAdminRole, checkAuth, async (req, res) => {
+// Get all comments (accessible only to admin users)
+router.get("/comments", verifyAdminRole, async (req, res) => {
   try {
     const comments = await Comment.find().populate("user", "username profileImage");
     res.json(comments);

@@ -22,7 +22,6 @@ router.get("/:id", async (req, res) => {
       details: { favourites, watchStateList },
     });
   } catch (err) {
-    console.log(err);
     res.status(500).json({
       message: "Нет доступа",
     });

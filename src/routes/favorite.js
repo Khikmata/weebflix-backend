@@ -1,35 +1,53 @@
 import express from "express";
-import { checkAuth } from "../middleware/auth.js";
+
 import { UserModel } from "../models/User.js";
 
 const router = express.Router();
 
 // Add anime to favorites
-router.post("/", checkAuth, async (req, res) => {
+router.post("/", async (req, res) => {
   try {
-    const { animeId } = req.body;
-    const user = await UserModel.findById(req.userId);
+    const { anime: animeData, userId } = req.body;
+    const user = await UserModel.findById(userId).populate("favoriteList");
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    user.favoriteList.push(animeId);
+    console.log(animeData);
+    // Check if the anime with the same ID already exists in the favoriteList
+    const isDuplicate = user.favoriteList.some((fav) => {
+      return fav.mal_id === animeData.mal_id;
+    });
+    if (isDuplicate) {
+      return res.status(409).json({ error: "Anime already exists in favorites" });
+    }
+    user.favoriteList.push(animeData);
     await user.save();
-    res.sendStatus(201);
+
+    res.sendStatus(201).json({ message: "Anime added successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 // Delete anime from favorites
-router.delete("/:animeId", checkAuth, async (req, res) => {
+router.delete("/", async (req, res) => {
   try {
-    const user = await UserModel.findById(req.user.id);
+    const { animeId, userId } = req.body;
+
+    const user = await UserModel.findById(userId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    user.favoriteList.pull(req.params.animeId);
+
+    const animeIndex = user.favoriteList.findIndex((fav) => fav.mal_id === animeId);
+    if (animeIndex === -1) {
+      return res.status(404).json({ error: "Anime not found in favorites" });
+    }
+
+    user.favoriteList.splice(animeIndex, 1);
     await user.save();
-    res.sendStatus(204);
+
+    res.sendStatus(204).json({message: 'Anime removed successfully'});
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

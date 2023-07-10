@@ -27,7 +27,6 @@ router.post("/register", async (req, res) => {
 
     res.status(201).json({ message: "User has been created!" });
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       message: "Нет доступа",
     });
@@ -53,7 +52,7 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
     res.json({ token, userId: user._id });
   } catch (error) {
-    console.log(error);
+    res.status(403).json({ message: error });
   }
 });
 
@@ -63,7 +62,6 @@ router.get("/me", checkAuth, async (req, res) => {
     const user = await UserModel.findById(req.userId)
       .select("-password")
       .populate("favoriteList", "-_id title");
-    console.log(user);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }

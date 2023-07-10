@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
+import { UserModel } from "../models/User.js";
 
 //check if user is authenticated
 export const checkAuth = (req, res, next) => {
   const token = (req.headers.authorization || "").replace(/Bearer\s?/, "");
-
   if (!token) {
     return res.status(403).json({ message: "Invalid token" });
   }
