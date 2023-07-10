@@ -5,16 +5,29 @@ const router = express.Router();
 
 router.post("/", async (req, res) => {
   try {
-    const { animeId, myRating } = req.body;
-    const user = await UserModel.findById(req.user.id);
+    const { animeData, myRating, userId } = req.body;
+
+    console.log(animeData);
+    const user = await UserModel.findById(userId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    user.starList.push({ anime: animeId, myRating });
-    await user.save();
+    const existingAnimeIndex = user.starList.findIndex(
+      (entry) => entry.anime.mal_id === animeData.mal_id
+    );
 
-    res.sendStatus(201);
+    if (existingAnimeIndex !== -1) {
+      // Anime already exists in starList, update the rating
+      user.starList[existingAnimeIndex].myRating = myRating;
+      res.sendStatus(201).json({ message: "value changed" });
+    } else {
+      // Anime does not exist in starList, add it
+      user.starList.push({ anime: animeData, myRating: myRating });
+      res.sendStatus(201).json({ message: "value added" });
+    }
+
+    await user.save();
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

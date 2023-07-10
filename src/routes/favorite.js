@@ -8,6 +8,7 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   try {
     const { anime: animeData, userId } = req.body;
+
     const user = await UserModel.findById(userId).populate("favoriteList");
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -47,7 +48,7 @@ router.delete("/", async (req, res) => {
     user.favoriteList.splice(animeIndex, 1);
     await user.save();
 
-    res.sendStatus(204).json({message: 'Anime removed successfully'});
+    res.sendStatus(204).json({ message: "Anime removed successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

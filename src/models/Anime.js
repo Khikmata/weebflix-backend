@@ -4,8 +4,14 @@ import mongoose from "mongoose";
 export const animeSchema = new mongoose.Schema(
   {
     mal_id: { type: Number, required: true },
-    image_url: { type: String, required: true },
-    title: { type: String, required: true },
+    image_url: {
+      webp: {
+        image_url: { type: String },
+        large_image_url: { type: String },
+        small_image_url: { type: String },
+      },
+    },
+    title: { type: String },
     type: { type: String },
     status: { type: String },
     score: { type: Number },
