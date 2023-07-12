@@ -7,24 +7,24 @@ const router = express.Router();
 // Add anime to favorites
 router.post("/", async (req, res) => {
   try {
-    const { anime: animeData, userId } = req.body;
+    const { anime, userId } = req.body;
 
     const user = await UserModel.findById(userId).populate("favoriteList");
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    console.log(animeData);
+    console.log(anime);
     // Check if the anime with the same ID already exists in the favoriteList
     const isDuplicate = user.favoriteList.some((fav) => {
-      return fav.mal_id === animeData.mal_id;
+      return fav.mal_id === anime.mal_id;
     });
     if (isDuplicate) {
       return res.status(409).json({ error: "Anime already exists in favorites" });
     }
-    user.favoriteList.push(animeData);
+    user.favoriteList.push(anime);
     await user.save();
 
-    res.sendStatus(201).json({ message: "Anime added successfully" });
+    res.status(201).json({ message: "Anime added successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -48,7 +48,7 @@ router.delete("/", async (req, res) => {
     user.favoriteList.splice(animeIndex, 1);
     await user.save();
 
-    res.sendStatus(204).json({ message: "Anime removed successfully" });
+    res.status(204).json({ message: "Anime removed successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

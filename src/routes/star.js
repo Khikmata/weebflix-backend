@@ -10,7 +10,7 @@ router.post("/", async (req, res) => {
     console.log(animeData);
     const user = await UserModel.findById(userId);
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: "Not authorized" });
     }
 
     const existingAnimeIndex = user.starList.findIndex(
@@ -20,11 +20,11 @@ router.post("/", async (req, res) => {
     if (existingAnimeIndex !== -1) {
       // Anime already exists in starList, update the rating
       user.starList[existingAnimeIndex].myRating = myRating;
-      res.sendStatus(201).json({ message: "value changed" });
+      res.status(201).json({ message: "Rating changed successfully" });
     } else {
       // Anime does not exist in starList, add it
       user.starList.push({ anime: animeData, myRating: myRating });
-      res.sendStatus(201).json({ message: "value added" });
+      res.status(201).json({ message: "Rating added successfully" });
     }
 
     await user.save();
@@ -44,7 +44,7 @@ router.delete("/:animeId", async (req, res) => {
     await user.starList.remove(req.params.animeId);
     await user.save();
 
-    res.sendStatus(204);
+    res.status(204).json({ message: "Rating removed successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

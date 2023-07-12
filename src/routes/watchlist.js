@@ -7,16 +7,30 @@ const router = express.Router();
 // Add anime to watchlist
 router.post("/", async (req, res) => {
   try {
-    const { animeId, watchState } = req.body;
-    const user = await UserModel.findById(req.user.id);
+    const { animeData, watchState, userId } = req.body;
+
+    const user = await UserModel.findById(userId);
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: "Not authorized" });
     }
-    user.watchList.push({ anime: animeId, watchState });
-    await user.save();
-    res.sendStatus(201);
+
+    const existingAnimeIndex = user.watchList.findIndex(
+      (entry) => entry.anime.mal_id === animeData.mal_id
+    );
+
+    if (existingAnimeIndex !== -1) {
+      // Anime already exists in watchlist, update the rating
+      user.watchList[existingAnimeIndex].watchState = watchState;
+      await user.save();
+      return res.status(201).json({ message: "Watchstate changed successfully" });
+    } else {
+      // Anime does not exist in watchlist, add it
+      user.watchList.push({ anime: animeData, watchState: watchState });
+      await user.save();
+      return res.status(201).json({ message: "Watchstate added successfully" });
+    }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 });
 
@@ -31,9 +45,9 @@ router.delete("/:animeId", async (req, res) => {
     await user.watchList.remove(req.params.animeId);
     await user.save();
 
-    res.sendStatus(204);
+    return res.status(204);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 });
 

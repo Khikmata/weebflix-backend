@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 export const animeSchema = new mongoose.Schema(
   {
     mal_id: { type: Number, required: true },
-    image_url: {
+    images: {
       webp: {
         image_url: { type: String },
         large_image_url: { type: String },

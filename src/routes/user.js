@@ -36,7 +36,7 @@ router.get("/:id/favorites", async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    res.json(user.favoriteList);
+    res.json({ message: user.favoriteList });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -48,7 +48,7 @@ router.get("/:id/watchlist", checkAuth, async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    res.json(user.watchlist);
+    res.json(user.watchList);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -60,7 +60,7 @@ router.get("/:id/starlist", checkAuth, async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    res.json(user.starlist);
+    res.json(user.starList);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
