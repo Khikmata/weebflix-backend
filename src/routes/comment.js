@@ -1,34 +1,32 @@
 import express from "express";
-import { checkAuth } from "../middleware/auth.js";
 import { Comment } from "../models/Comment.js";
 import { UserModel } from "../models/User.js";
 
 const router = express.Router();
 
 // Add comment
-router.post("/", checkAuth, async (req, res) => {
+router.post("/", async (req, res) => {
   try {
-    const { animeId, content } = req.body;
+    const { animeId, content, userId } = req.body;
 
-    const user = await UserModel.findById(req.userId);
+    const user = await UserModel.findById(userId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
     const comment = new Comment({
-      user: req.userId,
-      animeId: animeId,
+      user: user,
+      mal_id: animeId,
       content,
     });
 
-    user.comments.push(comment);
-    await user.save();
+    const populatedComment = await comment.populate("user", "username profileImage");
+    console.log(populatedComment);
+    user.comments.push(populatedComment);
 
-    const populatedComment = (await comment.populate("user", "username profileImage")).populate(
-      "anime",
-      "mal_id"
-    );
-    await comment.save();
+    await user.save();
+    await populatedComment.save();
+
     res.status(201).json(populatedComment);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -36,7 +34,7 @@ router.post("/", checkAuth, async (req, res) => {
 });
 
 // Edit comment
-router.put("/:commentId", checkAuth, async (req, res) => {
+router.put("/:commentId", async (req, res) => {
   try {
     const { commentId } = req.params;
     const { content } = req.body;
@@ -66,7 +64,7 @@ router.put("/:commentId", checkAuth, async (req, res) => {
 });
 
 // Delete comment
-router.delete("/:commentId", checkAuth, async (req, res) => {
+router.delete("/:commentId", async (req, res) => {
   try {
     const { commentId } = req.params;
 
@@ -105,6 +103,21 @@ router.get("/:commentId", async (req, res) => {
     }
 
     res.json(comment);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get("/all/:animeId", async (req, res) => {
+  try {
+    const { animeId } = req.params;
+
+    const comments = await Comment.find({ mal_id: animeId }).populate(
+      "user",
+      "username profileImage"
+    );
+
+    res.json(comments);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

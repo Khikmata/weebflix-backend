@@ -41,8 +41,8 @@ const getAnimeUrl = async (title) => {
     }
 
     // Extract the anime slug from the URL
-    const animeSlug = animeUrl.replace("https://www3.gogoanimes.fi/category/", "");
-
+    const animeSlug = animeUrl.split("/").pop();
+    console.log(animeSlug);
     return animeSlug;
   } catch (error) {
     throw error;
