@@ -21,7 +21,7 @@ router.post("/", async (req, res) => {
     });
 
     const populatedComment = await comment.populate("user", "username profileImage");
-    console.log(populatedComment);
+    ``;
     user.comments.push(populatedComment);
 
     await user.save();
@@ -57,7 +57,7 @@ router.put("/:commentId", async (req, res) => {
     comment.content = content;
     await user.save();
 
-    res.sendStatus(204);
+    res.status(204);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -86,7 +86,7 @@ router.delete("/:commentId", async (req, res) => {
     comment.remove();
     await user.save();
 
-    res.sendStatus(204);
+    res.status(204);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
-import { Anime, animeSchema } from "./Anime.js";
-import { Comment } from "./Comment.js";
+import { animeSchema } from "./Anime.js";
 
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true },
@@ -12,18 +11,16 @@ const userSchema = new mongoose.Schema({
   },
   age: { type: Number },
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  comments: [Comment.schema],
-  favoriteList: [Anime.schema],
-  watchList: [
+  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+  list: [
     {
       anime: animeSchema,
-      watchState: { type: String, enum: ["watched", "planned", "dropped"] },
-    },
-  ],
-  starList: [
-    {
-      anime: animeSchema,
+      watchState: {
+        type: String,
+        enum: ["completed", "planned", "dropped", "watching", "on hold"],
+      },
       myRating: { type: Number, min: 0, max: 10 },
+      isFavorite: { type: Boolean },
     },
   ],
   role: { type: String, enum: ["user", "admin"], default: "user" },

@@ -17,7 +17,7 @@ router.post("/friends", checkAuth, async (req, res) => {
     friend.friends.push(req.user.id);
     await user.save();
     await friend.save();
-    res.sendStatus(201);
+    res.status(201);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -36,7 +36,7 @@ router.delete("/friends/:friendId", checkAuth, async (req, res) => {
     friend.friends.pull(req.user.id);
     await user.save();
     await friend.save();
-    res.sendStatus(204);
+    res.status(204);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

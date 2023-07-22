@@ -50,7 +50,7 @@ router.post("/login", async (req, res) => {
     }
 
     const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-    res.json({ token, userId: user._id });
+    res.status(200).json({ token, userId: user._id });
   } catch (error) {
     res.status(403).json({ message: error });
   }
@@ -61,11 +61,12 @@ router.get("/me", checkAuth, async (req, res) => {
   try {
     const user = await UserModel.findById(req.userId)
       .select("-password")
-      .populate("favoriteList", "-_id title");
+      .populate("list", "-_id anime");
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.json(user);
+    res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -73,13 +74,14 @@ router.get("/me", checkAuth, async (req, res) => {
 // Get current user's favorite anime list
 router.get("/me/favoritelist", checkAuth, async (req, res) => {
   try {
-    const user = await UserModel.findById(req.userId)
-      .select("favoriteList")
-      .populate("favoriteList");
+    const user = await UserModel.findById(req.userId).select("list").populate("list.anime");
+
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    res.json(user.favoriteList);
+
+    const favorites = user.list.filter((entry) => entry.isFavorite);
+    res.status(200).json(favorites);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -88,11 +90,14 @@ router.get("/me/favoritelist", checkAuth, async (req, res) => {
 // Get current user's watchlist
 router.get("/me/watchlist", checkAuth, async (req, res) => {
   try {
-    const user = await UserModel.findById(req.userId).select("watchList").populate("watchList");
+    const user = await UserModel.findById(req.userId).select("list").populate("list.anime");
+
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    res.json(user.watchList);
+
+    const watchlist = user.list.filter((entry) => entry.watchState !== null);
+    res.status(200).json(watchlist);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -101,11 +106,14 @@ router.get("/me/watchlist", checkAuth, async (req, res) => {
 // Get current user's watchlist
 router.get("/me/starlist", checkAuth, async (req, res) => {
   try {
-    const user = await UserModel.findById(req.userId).select("starList").populate("starList");
+    const user = await UserModel.findById(req.userId).select("list").populate("list.anime");
+
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    res.json(user.starList);
+
+    const starlist = user.list.filter((entry) => entry.myRating !== null);
+    res.json(starlist);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

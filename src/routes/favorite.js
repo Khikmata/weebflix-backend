@@ -8,20 +8,21 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   try {
     const { anime, userId } = req.body;
-
-    const user = await UserModel.findById(userId).populate("favoriteList");
+    console.log(userId, anime);
+    const user = await UserModel.findById(userId).populate("list");
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    console.log(anime);
+
     // Check if the anime with the same ID already exists in the favoriteList
-    const isDuplicate = user.favoriteList.some((fav) => {
-      return fav.mal_id === anime.mal_id;
+    const isDuplicate = user.list.some((entry) => {
+      return entry.anime.mal_id === anime.mal_id;
     });
     if (isDuplicate) {
       return res.status(409).json({ error: "Anime already exists in favorites" });
     }
-    user.favoriteList.push(anime);
+
+    user.list.push({ anime, isFavorite: true });
     await user.save();
 
     res.status(201).json({ message: "Anime added successfully" });
@@ -40,12 +41,12 @@ router.delete("/", async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const animeIndex = user.favoriteList.findIndex((fav) => fav.mal_id === animeId);
+    const animeIndex = user.list.findIndex((entry) => entry.anime.mal_id === animeId);
     if (animeIndex === -1) {
       return res.status(404).json({ error: "Anime not found in favorites" });
     }
 
-    user.favoriteList.splice(animeIndex, 1);
+    user.list.splice(animeIndex, 1);
     await user.save();
 
     res.status(204).json({ message: "Anime removed successfully" });
