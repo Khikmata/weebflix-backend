@@ -85,7 +85,7 @@ router.get("/:userId/:animeId", async (req, res) => {
     const { userId, animeId } = req.params;
     // Check if the anime exists
     const user = await UserModel.findById(userId)
-      .populate({ path: "list", populate: "anime" })
+      .populate({ path: "list", populate: { path: "anime" } })
       .populate({
         path: "comments",
         match: { mal_id: animeId },
@@ -99,14 +99,16 @@ router.get("/:userId/:animeId", async (req, res) => {
     }
 
     // Check if the anime is in the user's favoriteList
-    const isFavorite = user.list.some((entry) => {
-      entry.anime && entry.anime.mal_id === Number(animeId) && entry.isFavorite;
+    const isFavorite = user.list.find((entry) => {
+      entry.anime && entry.anime.mal_id.toString() === animeId && entry.isFavorite;
     });
 
     // Check if the anime is in the user's watchList
     const isWatchlisted = user.list.some(
       (entry) => entry.anime && entry.anime.mal_id === Number(animeId) && entry.watchState !== null
     );
+
+    const watchState = isWatchlisted ? isWatchlisted.watchState : null;
 
     // Check if the anime is in the user's starList
     const starAnime = user.list.some(
@@ -124,7 +126,7 @@ router.get("/:userId/:animeId", async (req, res) => {
     const animeDetails = {
       animeId,
       isFavorite,
-      isWatchlisted,
+      watchState,
       myRating,
       comments,
     };

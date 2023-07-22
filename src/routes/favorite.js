@@ -8,7 +8,7 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   try {
     const { anime, userId } = req.body;
-    console.log(userId, anime);
+
     const user = await UserModel.findById(userId).populate("list");
     if (!user) {
       return res.status(404).json({ error: "User not found" });
