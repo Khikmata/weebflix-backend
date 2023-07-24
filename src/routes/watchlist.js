@@ -35,12 +35,14 @@ router.post("/", async (req, res) => {
 // Delete anime from watchlist
 router.delete("/:animeId", async (req, res) => {
   try {
-    const user = await UserModel.findById(req.user.id);
+    const user = await UserModel.findById(req.body.userId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const animeIndex = user.list.findIndex((entry) => entry.anime.mal_id === req.params.animeId);
+    const animeIndex = user.list.findIndex(
+      (entry) => entry.anime.mal_id.toString() === req.params.animeId && entry.watchState !== null
+    );
     if (animeIndex === -1) {
       return res.status(404).json({ error: "Anime not found in watchlist" });
     }

@@ -33,12 +33,17 @@ router.post("/", async (req, res) => {
 // Remove anime from starred anime list
 router.delete("/:animeId", async (req, res) => {
   try {
-    const user = await UserModel.findById(req.user.id);
+    const { userId } = req.body;
+
+    const user = await UserModel.findById(userId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const animeIndex = user.list.findIndex((entry) => entry.anime.mal_id === req.params.animeId);
+    const animeIndex = user.list.findIndex(
+      (entry) => entry.anime.mal_id.toString() == req.params.animeId && entry.myRating !== null
+    );
+
     if (animeIndex === -1) {
       return res.status(404).json({ error: "Anime not found in starred anime list" });
     }

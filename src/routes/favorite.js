@@ -16,7 +16,7 @@ router.post("/", async (req, res) => {
 
     // Check if the anime with the same ID already exists in the favoriteList
     const isDuplicate = user.list.some((entry) => {
-      return entry.anime.mal_id === anime.mal_id;
+      return entry.anime.mal_id === anime.mal_id && entry.anime.isFavorite;
     });
     if (isDuplicate) {
       return res.status(409).json({ error: "Anime already exists in favorites" });
