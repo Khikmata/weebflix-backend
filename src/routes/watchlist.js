@@ -50,7 +50,7 @@ router.delete("/:animeId", async (req, res) => {
     user.list.splice(animeIndex, 1);
     await user.save();
 
-    return res.status(204).json({ message: "Anime removed from watchlist successfully" });
+    return res.status(200).json({ message: "Anime removed from watchlist successfully" });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

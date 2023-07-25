@@ -51,7 +51,7 @@ router.delete("/:animeId", async (req, res) => {
     user.list.splice(animeIndex, 1);
     await user.save();
 
-    res.status(204).json({ message: "Rating removed successfully" });
+    res.status(201).json({ message: "Rating removed successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
