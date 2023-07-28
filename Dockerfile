@@ -14,16 +14,15 @@ ENV NODE_ENV production
 
 FROM ghcr.io/puppeteer/puppeteer:20.7.4
 
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \ PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
-RUN npm install
-RUN npm run ci
+RUN npm ci
 COPY . .
-EXPOSE 4001
-CMD ["node", "index.js"]
+CMD [ "nodemon", "index.js" ]
 
 
 

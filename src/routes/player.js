@@ -21,11 +21,6 @@ const getAnimeUrl = async (title) => {
   try {
     const URL = "https://www3.gogoanimes.fi/anime-list.html";
     const browser = await puppeteer.launch({
-      args: ["--no-sanbox", "--disable-setuid-sandbox", "--single-process", "no-zygote"],
-      executablePath:
-        process.env.NODE_ENV === "production"
-          ? process.env.PUPPERTEER_EXECUTABLE_PATH
-          : puppeteer.executablePath(),
       headless: true,
     });
     const page = await browser.newPage();
@@ -69,3 +64,11 @@ const getAnimeUrl = async (title) => {
 };
 
 export { router as PlayerRouter };
+
+//
+//      args: ["--no-sanbox", "--disable-setuid-sandbox", "--single-process", "no-zygote"],
+//      executablePath:
+//       process.env.NODE_ENV === "production"
+//          ? process.env.PUPPERTEER_EXECUTABLE_PATH
+//          : puppeteer.executablePath(),
+//
