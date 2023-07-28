@@ -21,12 +21,13 @@ let retries = 0;
 const getAnimeUrl = async (title) => {
   try {
     const URL = "https://www3.gogoanimes.fi/anime-list.html";
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     //Setting navigation to 60 secs
     page.setDefaultNavigationTimeout(60000);
     // Navigate to the GoGoAnime search page
     await page.goto(URL);
+
     // Type the anime title into the search input field
     await page.type("input#keyword", title);
     // Click the search button
@@ -48,14 +49,16 @@ const getAnimeUrl = async (title) => {
     const animeSlug = animeUrl.split("/").pop();
     return animeSlug;
   } catch (error) {
-    retries++;
-    if (retries < MAX_RETRIES) {
-      console.log(`Navigation attempt failed. Retrying... (Attempt ${retries})`);
-      await navigateToPage(); // Retry navigation
-    } else {
-      console.error("Navigation failed after multiple attempts.");
-      throw error; // Throw the error after retries exceeded
-    }
+    //   retries++;
+    //   if (retries < MAX_RETRIES) {
+    //     console.log(`Navigation attempt failed. Retrying... (Attempt ${retries})`);
+    //     await navigateToPage(); // Retry navigation
+    //   } else {
+    //     console.error("Navigation failed after multiple attempts.");
+    //     throw error; // Throw the error after retries exceeded
+    //   }
+    // }
+    console.log(error);
   }
 };
 
