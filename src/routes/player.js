@@ -1,7 +1,9 @@
 import express from "express";
 import puppeteer from "puppeteer";
-
+import dotenv from "dotenv";
 const router = express.Router();
+
+dotenv.config();
 
 router.get("/parseurl/:title", async (req, res) => {
   const { title } = req.params;
@@ -21,7 +23,14 @@ let retries = 0;
 const getAnimeUrl = async (title) => {
   try {
     const URL = "https://www3.gogoanimes.fi/anime-list.html";
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({
+      args: ["--no-sanbox", "--disable-setuid-sandbox", "--single-process", "no-zygote"],
+      executablePath:
+        process.env.NODE_ENV === "production"
+          ? process.env.PUPPERTEER_EXECUTABLE_PATH
+          : puppeteer.executablePath(),
+      headless: true,
+    });
     const page = await browser.newPage();
     //Setting navigation to 60 secs
     page.setDefaultNavigationTimeout(60000);
