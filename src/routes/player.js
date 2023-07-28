@@ -17,9 +17,6 @@ router.get("/parseurl/:title", async (req, res) => {
   return animeUrl;
 });
 
-const MAX_RETRIES = 3; // Maximum number of retries
-let retries = 0;
-
 const getAnimeUrl = async (title) => {
   try {
     const URL = "https://www3.gogoanimes.fi/anime-list.html";
