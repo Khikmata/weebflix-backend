@@ -19,7 +19,8 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \ PUPPETEER_EXECUTABLE_PATH=/usr/bin/g
 WORKDIR /usr/src/app
 
 COPY package*.json ./
-RUN npm run dev
+RUN npm install
+RUN npm run ci
 COPY . .
 EXPOSE 4001
 CMD ["node", "index.js"]
