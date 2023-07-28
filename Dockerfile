@@ -6,7 +6,7 @@
 
 ARG NODE_VERSION=18.14.2
 
-FROM node:${NODE_VERSION}-alpine
+FROM node:latest
 
 # Use production node environment by default.
 ENV NODE_ENV production
@@ -20,9 +20,10 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 WORKDIR /usr/src/app
 
 COPY package*.json ./
+RUN npm install
 RUN npm ci
 COPY . .
-CMD [ "node", "index.js" ]
+CMD [ "npm", "run", "dev" ]
 
 
 
