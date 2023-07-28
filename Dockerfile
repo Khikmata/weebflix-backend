@@ -23,7 +23,7 @@ COPY package*.json ./
 RUN npm ci
 COPY . .
 EXPOSE 4001
-CMD [ "npm", "run", "dev" ]
+CMD [ "node", "index.js"]
 
 
 
