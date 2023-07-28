@@ -22,7 +22,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm ci
 COPY . .
-CMD [ "nodemon", "index.js" ]
+CMD [ "node", "index.js" ]
 
 
 
