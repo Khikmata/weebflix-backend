@@ -1,33 +1,24 @@
 # weebflix-backend
 
-## Технологии:
+## Stack:
 
-`nodejs, express, mongoose, puppeteer(для парсинга плеера), jsonwebtokens + bcrypt, dotenv`
-
----
-
-## Запуск проекта:
-
-1. Клон репозитория `git clone`
-2. Установка пакетов `npm install`
-3. Запуск проекта `npm run dev`
+`nodejs, express, mongoose, puppeteer, jsonwebtokens + bcrypt, dotenv`
 
 ---
 
-## Функционал:
+## Project startup:
 
-**- Авторизация (Регистрация и логин)**
+1. Clone repository `git clone`
+2. Install packages `npm install`
+3. Run the project `npm run dev`
 
-**- Добавление в избранное, оценка + изменение состояния просмотра, комментирование**
+---
 
-**- Парсинг плеера**
+## Functionality:
 
-## TODO:
+**- Authorization using JWT tokens**
 
-**- Добавление в друзья**
+**- Adding animes to favorite, changing their rating, adding into a watchlist**
 
-**- Админка**
+**- Player parser**
 
-**- Докеризация**
-
-**- Изменение логики авторизации и проверки профиля**
